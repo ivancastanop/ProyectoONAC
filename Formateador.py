@@ -66,7 +66,7 @@ def procesar_archivos(archivos):
     consolidado_df.to_excel('ConsolidadoStreamlit.xlsx', index=False)        
     return consolidado_df
 
-st.title('Aplicación para formatear archivos de JNP en ONAC')
+st.title('Aplicación para consolidar JNP en ONAC')
 
 uploaded_files = st.file_uploader("Selecciona los archivos a cargar: ", accept_multiple_files=True)
 #st.write(uploaded_files)
