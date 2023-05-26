@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from io import BytesIO
 
 # Lista de nombres de columnas restantes en el orden deseado
 columnas_restantes = [
