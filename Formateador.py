@@ -21,17 +21,10 @@ columnas_restantes = [
 def procesar_archivos(archivos):
     consolidado_df = pd.DataFrame()
     for archivo in archivos:
-        #start_row=0
-        #end_row=0
-        #if archivo.endswith('.xlsx') or archivo.endswith('.xls'):
-        # Lee el archivo Excel
-        #st.write(archivo)
         df = pd.read_excel(archivo, sheet_name='2019-05-09')
 
         # Encuentra la fila que contiene el texto "CÓDIGO SECTOR GENERAL" en la primera columna y empieza a extraer la información a partir de la siguiente fila
         start_row = df[df.iloc[:, 1] == 'CÓDIGO SECTOR GENERAL'].index[0] + 1
-        print(start_row)
-
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
 
@@ -40,8 +33,6 @@ def procesar_archivos(archivos):
             if pd.isnull(df.iloc[row, 6]):
                 end_row = row  # Actualiza end_row cuando se encuentra una fila con la primera columna vacía
                 break
-        print(end_row)
-
         filtered_df = df.iloc[start_row:end_row, 1:]
         filtered_df.reset_index(drop=True, inplace=True)
 
@@ -72,7 +63,6 @@ def procesar_archivos(archivos):
 
         # Agrega los datos filtrados al DataFrame principal
         consolidado_df = pd.concat([consolidado_df, filtered_df], ignore_index=True)
-    #st.write("Termine la funcion")
     consolidado_df.to_excel('ConsolidadoStreamlit.xlsx', index=False)        
     return consolidado_df
 
