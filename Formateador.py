@@ -32,7 +32,7 @@ def procesar_archivos(archivos):
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
         # Encuentra la última fila del archivo para extraer la fecha de respuesta
-        fecha_respuesta = df[df.iloc[:, 1] == 'Revisión Profesional'].index[0] + 1
+        fecha_respuesta = df[df.iloc[:, 1] == 'Revisión Profesional'].index[0]
 
         
         # Itera desde la fila 24 hasta el final del DataFrame
