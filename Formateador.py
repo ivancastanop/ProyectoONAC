@@ -23,9 +23,13 @@ def procesar_archivos(archivos):
         try:
             df = pd.read_excel(archivo, sheet_name='2019-05-09')
             version = 0
-        except:
-            df = pd.read_excel(archivo, sheet_name='JNP')
-            version = 1
+        except ValueError:
+            try:
+                df = pd.read_excel(archivo, sheet_name='JNP')
+                version = 1
+            except ValueError as e:
+                print("Ni la hoja '2019-05-09' ni 'JNP' se encontraron en el archivo.", e)
+                df = None
 
         # Encuentra la fila que contiene el texto "CÓDIGO SECTOR GENERAL" en la primera columna y empieza a extraer la información a partir de la siguiente fila
         start_row = df[df.iloc[:, 1] == 'CÓDIGO SECTOR GENERAL'].index[0] + 1
