@@ -21,6 +21,7 @@ columnas_restantes = [
 def procesar_archivos(archivos):
     consolidado_df = pd.DataFrame()
     for archivo in archivos:
+        #Se valida si es el formato nuevo (JNP) o el formato antiguo (2019-05-09)
         try:
             df = pd.read_excel(archivo, sheet_name='2019-05-09')
             version = 0
@@ -37,8 +38,7 @@ def procesar_archivos(archivos):
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
 
-        # Encuentra la última fila del archivo para extraer la fecha de respuesta
-        
+        # Encuentra la última fila del archivo para extraer la fecha de respuesta dependiendo de si es la versión nueva o la antigua
         if version==0:
             fecha_respuesta = df[df.iloc[:, 1] == 'Laboratorios de Ensayo y Clínicos:'].index[0]
         elif version==1:
@@ -69,7 +69,7 @@ def procesar_archivos(archivos):
         # Extrae el nombre del OEC y crea una nueva columna en el DataFrame filtrado
         filtered_df['OEC']=df.iloc[7, 2]
 
-        # Extrae el la fecha de respuesta y crea una nueva columna en el DataFrame filtrado
+        # Extrae el la fecha de respuesta y crea una nueva columna en el DataFrame filtrado dependiendo de si es la versión nueva o la antigua
         if version==1:
             date_str = str(df.iloc[fecha_respuesta, 11])
             date_str=date_str[0:10]
