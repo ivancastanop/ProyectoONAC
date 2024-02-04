@@ -20,13 +20,19 @@ columnas_restantes = [
 def procesar_archivos(archivos):
     consolidado_df = pd.DataFrame()
     for archivo in archivos:
-        df = pd.read_excel(archivo, sheet_name='2019-05-09')
+        try:
+            df = df = pd.read_excel(archivo, sheet_name='2019-05-09')
+        except:
+            df = pd.read_excel('file.xlsx', sheet_name='JNP')
 
         # Encuentra la fila que contiene el texto "CÓDIGO SECTOR GENERAL" en la primera columna y empieza a extraer la información a partir de la siguiente fila
         start_row = df[df.iloc[:, 1] == 'CÓDIGO SECTOR GENERAL'].index[0] + 1
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
+        # Encuentra la última fila del archivo para extraer la fecha de respuesta
+        fecha_respuesta = df[df.iloc[:, 1] == 'Revisión Profesional'].index[0] + 1
 
+        
         # Itera desde la fila 24 hasta el final del DataFrame
         for row in range(21, len(df)):
             if pd.isnull(df.iloc[row, 6]):
@@ -51,14 +57,19 @@ def procesar_archivos(archivos):
         # Extrae el nombre del OEC y crea una nueva columna en el DataFrame filtrado
         filtered_df['OEC']=df.iloc[7, 2]
 
+        # Extrae el la fecha de respuesta y crea una nueva columna en el DataFrame filtrado
+        filtered_df['Fecha de respuesta']=df.iloc[fecha_respuesta, 11]
+
         # Se origaniza el DataFrame para que tenga el orden adecuado
+        filtered_df.insert(0, 'Fecha de respuesta', filtered_df.pop('Fecha de respuesta'))
         filtered_df.insert(0, 'Año', filtered_df.pop('Año'))
         filtered_df.insert(0, 'Fecha', filtered_df.pop('Fecha'))
         filtered_df.insert(0, 'Codigo de Acreditacion', filtered_df.pop('Codigo de Acreditacion'))
         filtered_df.insert(0, 'OEC', filtered_df.pop('OEC'))
+        
 
         # Se le da el nombre a las columnas
-        filtered_df.columns = ['OEC', 'Codigo de Acreditacion', 'Fecha', 'Año'] + columnas_restantes
+        filtered_df.columns = ['OEC', 'Codigo de Acreditacion', 'Fecha', 'Año', 'Fecha de respuesta'] + columnas_restantes
 
         # Agrega los datos filtrados al DataFrame principal
         consolidado_df = pd.concat([consolidado_df, filtered_df], ignore_index=True)
