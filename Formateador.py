@@ -31,10 +31,14 @@ def procesar_archivos(archivos):
         start_row = df[df.iloc[:, 1] == 'CÓDIGO SECTOR GENERAL'].index[0] + 1
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
-        # Encuentra la última fila del archivo para extraer la fecha de respuesta
-        fecha_respuesta = df[df.iloc[:, 1] == 'Revisión Profesional'].index[0]
 
+        # Encuentra la última fila del archivo para extraer la fecha de respuesta
         
+        if version==0:
+            fecha_respuesta = df[df.iloc[:, 1] == 'Laboratorios de Ensayo y Clínicos:'].index[0]
+        elif version==1:
+            fecha_respuesta = df[df.iloc[:, 1] == 'Revisión Profesional'].index[0]
+
         # Itera desde la fila 24 hasta el final del DataFrame
         for row in range(21, len(df)):
             if pd.isnull(df.iloc[row, 6]):
