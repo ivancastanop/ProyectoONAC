@@ -22,8 +22,10 @@ def procesar_archivos(archivos):
     for archivo in archivos:
         try:
             df = df = pd.read_excel(archivo, sheet_name='2019-05-09')
+            version = 0
         except:
             df = pd.read_excel('file.xlsx', sheet_name='JNP')
+            version = 1
 
         # Encuentra la fila que contiene el texto "CÓDIGO SECTOR GENERAL" en la primera columna y empieza a extraer la información a partir de la siguiente fila
         start_row = df[df.iloc[:, 1] == 'CÓDIGO SECTOR GENERAL'].index[0] + 1
@@ -58,7 +60,13 @@ def procesar_archivos(archivos):
         filtered_df['OEC']=df.iloc[7, 2]
 
         # Extrae el la fecha de respuesta y crea una nueva columna en el DataFrame filtrado
-        filtered_df['Fecha de respuesta']=df.iloc[fecha_respuesta, 11]
+        if version==1:
+            date_str = str(df.iloc[fecha_respuesta, 11])
+            filtered_df['Fecha de respuesta']=datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        elif version==0:
+            date_str = str(df.iloc[fecha_respuesta, 8])
+            date_str = date_str[6:]
+            filtered_df['Fecha de respuesta']=datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
 
         # Se origaniza el DataFrame para que tenga el orden adecuado
         filtered_df.insert(0, 'Fecha de respuesta', filtered_df.pop('Fecha de respuesta'))
