@@ -14,7 +14,8 @@ columnas_restantes = [
     'ACTIVIDAD DE ASEGURAMIENTO',
     'ACTIVIDAD DE ASEGURAMIENTO',
     'ACTIVIDAD DE ASEGURAMIENTO',
-    'ACEPTACIÓN DE LA JUSTIFICACIÓN'
+    'ACEPTACIÓN DE LA JUSTIFICACIÓN',
+    'FECHA DE RESPUESTA'
 ]
 
 def procesar_archivos(archivos):
@@ -53,7 +54,8 @@ def procesar_archivos(archivos):
 
         # Extrae la fecha de la columna 3, fila 7
         date_str = str(df.iloc[5, 2])
-        date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')  # Convierte la cadena de fecha en un objeto datetime
+        date_str=date_str[0:10]
+        date = datetime.strptime(date_str, '%Y-%m-%d')  # Convierte la cadena de fecha en un objeto datetime
 
         # Agrega la fecha extraída como una nueva columna en el DataFrame filtrado
         filtered_df['Fecha'] = date
@@ -70,14 +72,14 @@ def procesar_archivos(archivos):
         # Extrae el la fecha de respuesta y crea una nueva columna en el DataFrame filtrado
         if version==1:
             date_str = str(df.iloc[fecha_respuesta, 11])
-            filtered_df['Fecha de respuesta']=datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+            date_str=date_str[0:10]
+            filtered_df['FECHA DE RESPUESTA']= datetime.strptime(date_str, '%Y-%m-%d')
         elif version==0:
             date_str = str(df.iloc[fecha_respuesta, 8])
-            date_str = date_str[6:]
-            filtered_df['Fecha de respuesta']=datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+            date_str=date_str[8:]
+            filtered_df['FECHA DE RESPUESTA']=datetime.strptime(date_str, '%Y-%m-%d')
 
         # Se origaniza el DataFrame para que tenga el orden adecuado
-        filtered_df.insert(0, 'Fecha de respuesta', filtered_df.pop('Fecha de respuesta'))
         filtered_df.insert(0, 'Año', filtered_df.pop('Año'))
         filtered_df.insert(0, 'Fecha', filtered_df.pop('Fecha'))
         filtered_df.insert(0, 'Codigo de Acreditacion', filtered_df.pop('Codigo de Acreditacion'))
@@ -85,7 +87,7 @@ def procesar_archivos(archivos):
         
 
         # Se le da el nombre a las columnas
-        filtered_df.columns = ['OEC', 'Codigo de Acreditacion', 'Fecha', 'Año', 'Fecha de respuesta'] + columnas_restantes
+        filtered_df.columns = ['OEC', 'Codigo de Acreditacion', 'Fecha', 'Año'] + columnas_restantes
 
         # Agrega los datos filtrados al DataFrame principal
         consolidado_df = pd.concat([consolidado_df, filtered_df], ignore_index=True)
