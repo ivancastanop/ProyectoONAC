@@ -21,7 +21,7 @@ def procesar_archivos(archivos):
     consolidado_df = pd.DataFrame()
     for archivo in archivos:
         try:
-            df = df = pd.read_excel(archivo, sheet_name='2019-05-09')
+            df = pd.read_excel(archivo, sheet_name='2019-05-09')
             version = 0
         except:
             df = pd.read_excel('file.xlsx', sheet_name='JNP')
