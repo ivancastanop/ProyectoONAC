@@ -24,7 +24,7 @@ def procesar_archivos(archivos):
             df = pd.read_excel(archivo, sheet_name='2019-05-09')
             version = 0
         except:
-            df = pd.read_excel('file.xlsx', sheet_name='JNP')
+            df = pd.read_excel(archivo, sheet_name='JNP')
             version = 1
 
         # Encuentra la fila que contiene el texto "CÓDIGO SECTOR GENERAL" en la primera columna y empieza a extraer la información a partir de la siguiente fila
