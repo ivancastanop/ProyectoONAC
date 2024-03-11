@@ -40,8 +40,6 @@ def procesar_archivos(archivos):
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
 
-        print(archivo)
-
         # Encuentra la última fila del archivo para extraer la fecha de respuesta dependiendo de si es la versión nueva o la antigua
         if version==0:
             fecha_respuesta = df[df.iloc[:, 1] == 'Laboratorios de Ensayo y Clínicos:'].index[0]
