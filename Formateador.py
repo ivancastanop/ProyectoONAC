@@ -21,6 +21,8 @@ columnas_restantes = [
 def procesar_archivos(archivos):
     consolidado_df = pd.DataFrame()
     for archivo in archivos:
+        filtered_df=pd.DataFrame()
+        df=pd.DataFrame()
         #Se valida si es el formato nuevo (JNP) o el formato antiguo (2019-05-09)
         try:
             df = pd.read_excel(archivo, sheet_name='2019-05-09')
@@ -38,6 +40,8 @@ def procesar_archivos(archivos):
         # Encuentra la última fila donde la tercera columna no tiene datos
         end_row = 21  # Inicialmente, establece end_row en 20 filas después del start_row
 
+        print(archivo)
+
         # Encuentra la última fila del archivo para extraer la fecha de respuesta dependiendo de si es la versión nueva o la antigua
         if version==0:
             fecha_respuesta = df[df.iloc[:, 1] == 'Laboratorios de Ensayo y Clínicos:'].index[0]
@@ -49,7 +53,7 @@ def procesar_archivos(archivos):
             if pd.isnull(df.iloc[row, 6]):
                 end_row = row  # Actualiza end_row cuando se encuentra una fila con la primera columna vacía
                 break
-        filtered_df = df.iloc[start_row:end_row, 1:]
+        filtered_df = df.iloc[start_row:end_row, 1:12]
         filtered_df.reset_index(drop=True, inplace=True)
 
         # Extrae la fecha de la columna 3, fila 7
@@ -73,11 +77,17 @@ def procesar_archivos(archivos):
         if version==1:
             date_str = str(df.iloc[fecha_respuesta, 11])
             date_str=date_str[0:10]
-            filtered_df['FECHA DE RESPUESTA']= datetime.strptime(date_str, '%Y-%m-%d')
+            try:
+                filtered_df['FECHA DE RESPUESTA']= datetime.strptime(date_str, '%Y-%m-%d')
+            except:
+                filtered_df['FECHA DE RESPUESTA']='NA'
         elif version==0:
             date_str = str(df.iloc[fecha_respuesta, 8])
             date_str=date_str[8:]
-            filtered_df['FECHA DE RESPUESTA']=datetime.strptime(date_str, '%Y-%m-%d')
+            try:
+                filtered_df['FECHA DE RESPUESTA']=datetime.strptime(date_str, '%Y-%m-%d')
+            except:
+                filtered_df['FECHA DE RESPUESTA']='NA'
 
         # Se origaniza el DataFrame para que tenga el orden adecuado
         filtered_df.insert(0, 'Año', filtered_df.pop('Año'))
@@ -85,6 +95,7 @@ def procesar_archivos(archivos):
         filtered_df.insert(0, 'Codigo de Acreditacion', filtered_df.pop('Codigo de Acreditacion'))
         filtered_df.insert(0, 'OEC', filtered_df.pop('OEC'))
         
+        #print(list(filtered_df.columns))
 
         # Se le da el nombre a las columnas
         filtered_df.columns = ['OEC', 'Codigo de Acreditacion', 'Fecha', 'Año'] + columnas_restantes
